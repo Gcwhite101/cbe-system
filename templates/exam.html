@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ course }} Exam</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<h2>{{ course }} Examination</h2>
+
+<div id="timer">Time Left: 02:00</div>
+
+<div class="exam-container">
+
+    <!-- SIDEBAR -->
+    <div class="question-nav">
+        {% for q in questions %}
+            <button type="button" onclick="scrollToQuestion('{{ q[0] }}')" 
+                    id="nav{{ q[0] }}">
+                {{ loop.index }}
+            </button>
+        {% endfor %}
+    </div>
+
+    <!-- QUESTIONS -->
+    <form method="POST" action="/submit_exam/{{ course }}" class="exam-form">
+
+        {% for q in questions %}
+        <div class="question-box-left" id="q{{ q[0] }}">
+            <p><strong>Question {{ loop.index }}:</strong> {{ q[2] }}</p>
+
+            {% for option in ['A','B','C','D'] %}
+            {% set value = q[loop.index+2] %}
+            {% endfor %}
+
+            <label>
+                <input type="radio" name="{{ q[0] }}" value="{{ q[3] }}" 
+                       onclick="markAnswered('{{ q[0] }}')">
+                A. {{ q[3] }}
+            </label><br>
+
+            <label>
+                <input type="radio" name="{{ q[0] }}" value="{{ q[4] }}"
+                       onclick="markAnswered('{{ q[0] }}')">
+                B. {{ q[4] }}
+            </label><br>
+
+            <label>
+                <input type="radio" name="{{ q[0] }}" value="{{ q[5] }}"
+                       onclick="markAnswered('{{ q[0] }}')">
+                C. {{ q[5] }}
+            </label><br>
+
+            <label>
+                <input type="radio" name="{{ q[0] }}" value="{{ q[6] }}"
+                       onclick="markAnswered('{{ q[0] }}')">
+                D. {{ q[6] }}
+            </label>
+        </div>
+        {% endfor %}
+
+        <button type="submit">Submit Exam</button>
+    </form>
+
+</div>
+
+<script>
+// TIMER
+let timeLeft = 120;
+let timer = document.getElementById("timer");
+
+let countdown = setInterval(function() {
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+    timer.innerHTML = "Time Left: " + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+
+    timeLeft--;
+    if (timeLeft < 0) {
+        clearInterval(countdown);
+        document.forms[0].submit();
+    }
+}, 1000);
+
+// SCROLL NAVIGATION
+function scrollToQuestion(id) {
+    document.getElementById("q" + id).scrollIntoView();
+}
+
+// HIGHLIGHT ANSWERED
+function markAnswered(id) {
+    document.getElementById("nav" + id).style.background = "green";
+}
+</script>
+
+</body>
+</html>

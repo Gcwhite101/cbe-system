@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Grades</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<h2>Grades Overview</h2>
+
+<div class="result-box">
+    {% if results %}
+        {% for r in results %}
+            <p>
+                <strong>{{ r[0] }}</strong> —
+                {% if r[1] >= 2 %}
+                    PASS
+                {% else %}
+                    FAIL
+                {% endif %}
+            </p>
+        {% endfor %}
+    {% else %}
+        <p>No grades yet.</p>
+    {% endif %}
+</div>
+
+<a href="/dashboard" class="logout-btn">Back</a>
+
+</body>
+</html>

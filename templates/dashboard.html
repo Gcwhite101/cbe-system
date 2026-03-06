@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<!-- HERO SECTION -->
+<div class="dashboard-hero">
+    <h1>Welcome, {{ student.name }}</h1>
+    <p>University Computer Based Examination Portal</p>
+    <a href="/logout" class="logout-btn">Logout</a>
+</div>
+
+<!-- STUDENT PROFILE CARD -->
+<div class="profile-card">
+    <h2>Student Profile</h2>
+    <ul>
+        <li><strong>Matric Number:</strong> {{ student.matric }}</li>
+        <li><strong>Department:</strong> {{ student.department }}</li>
+        <li><strong>Faculty:</strong> {{ student.faculty }}</li>
+        <li><strong>Level:</strong> {{ student.level }}</li>
+        <li><strong>Programme:</strong> {{ student.discipline }}</li>
+    </ul>
+</div>
+
+<!-- MENU CARDS -->
+<div class="card-container">
+    <a href="/courses" class="card">📘 Courses</a>
+    <a href="/result" class="card">📊 CBE Results</a>
+    <a href="/grades" class="card">🎓 Grades</a>
+</div>
+
+<!-- MOTIVATIONAL QUOTE -->
+<div class="quote">
+    <p>
+        "Success is not defined by luck but by preparation, discipline, and the courage to
+        attempt greatness. Every examination you take is a step toward your destiny.
+        Stay focused. Stay determined. Excellence is yours."
+    </p>
+</div>
+
+</body>
+</html>

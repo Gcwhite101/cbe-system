@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CBE Simulator - University Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="landing-hero">
+    <h1>UNIVERSITY COMPUTER BASED EXAMINATION PORTAL</h1>
+    <p class="tagline">Empowering Academic Excellence Through Digital Assessment</p>
+</div>
+
+<div class="description">
+    <h2>About This Portal</h2>
+    <p>
+        Welcome to the official Computer Based Examination (CBE) platform designed to
+        transform the academic assessment experience within our institution. This system
+        provides students with a secure, reliable, and innovative digital environment
+        where examinations are conducted seamlessly with transparency and efficiency.
+    </p>
+
+    <p>
+        Our mission is to eliminate traditional examination stress while maintaining the
+        highest standards of academic integrity. Through this platform, students can
+        access registered courses, participate in timed assessments, view instant results,
+        and monitor academic progress in real time.
+    </p>
+
+    <p>
+        Built with advanced technology and user-focused design, the CBE Portal ensures
+        fast performance, secure authentication, accurate grading systems, and complete
+        confidentiality of academic records.
+    </p>
+
+    <p>
+        This is more than just an examination system — it is a digital transformation
+        initiative that prepares students for a technologically advanced future.
+        Welcome to the future of academic assessment.
+    </p>
+</div>
+
+<div class="login-card">
+    <h2>Student Login</h2>
+    <form method="POST">
+        <input type="text" name="matric" placeholder="Matric Number" required>
+        <input type="text" name="fullname" placeholder="Full Name" required>
+        <input type="text" name="department" placeholder="Department" required>
+        <input type="text" name="faculty" placeholder="Faculty" required>
+        <button type="submit">Access Portal</button>
+    </form>
+</div>
+
+</body>
+</html>

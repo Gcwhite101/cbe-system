@@ -1,0 +1,330 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(-45deg, #1e3c72, #2a5298, #162447, #0f3460);
+    background-size: 400% 400%;
+    animation: gradientMove 12s ease infinite;
+    color: white;
+    text-align: center;
+}
+
+/* Animated Background */
+@keyframes gradientMove {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+
+/* HERO */
+.landing-hero {
+    padding: 60px 20px 20px 20px;
+    animation: fadeInDown 1.2s ease-in-out;
+}
+
+.landing-hero h1 {
+    font-size: 32px;
+    letter-spacing: 2px;
+}
+
+.tagline {
+    opacity: 0.8;
+    margin-top: 10px;
+}
+
+/* DESCRIPTION SECTION */
+.description {
+    max-width: 900px;
+    margin: 40px auto;
+    line-height: 1.8;
+    padding: 0 20px;
+    animation: fadeIn 2s ease-in-out;
+}
+
+.description h2 {
+    margin-bottom: 20px;
+}
+
+.description p {
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+/* LOGIN CARD */
+.login-card {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    width: 400px;
+    margin: 40px auto 80px auto;
+    padding: 40px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    animation: fadeInUp 1.5s ease-in-out;
+}
+
+.login-card h2 {
+    margin-bottom: 20px;
+}
+
+input {
+    display: block;
+    width: 100%;
+    margin: 12px 0;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 6px;
+    background: gold;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.05);
+    background: orange;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeInDown {
+    from {opacity: 0; transform: translateY(-30px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+@keyframes fadeInUp {
+    from {opacity: 0; transform: translateY(30px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+/* DASHBOARD HERO */
+.dashboard-hero {
+    padding: 60px 20px;
+    text-align: center;
+    animation: fadeInDown 1.5s ease;
+}
+
+.dashboard-hero h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+/* PROFILE CARD */
+.profile-card {
+    width: 500px;
+    margin: 20px auto;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    animation: fadeInUp 1.5s ease;
+    transform-style: preserve-3d;
+    transition: 0.4s;
+}
+
+.profile-card:hover {
+    transform: rotateY(5deg) scale(1.02);
+}
+
+.profile-card ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+
+.profile-card li {
+    margin: 10px 0;
+}
+
+/* MENU CARDS */
+.card-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 40px 0;
+}
+
+.card {
+    background: rgba(255,255,255,0.15);
+    padding: 30px;
+    border-radius: 15px;
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    transition: 0.4s;
+    backdrop-filter: blur(10px);
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.05);
+}
+
+/* MOTIVATION QUOTE */
+.quote {
+    max-width: 800px;
+    margin: 50px auto;
+    font-style: italic;
+    opacity: 0.9;
+    animation: fadeIn 2s ease;
+}
+
+/* COURSE 3D GRID */
+.course-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    padding: 40px;
+}
+
+.course-card-3d {
+    width: 250px;
+    perspective: 1000px;
+}
+
+.course-inner {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 15px;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.course-card-3d:hover .course-inner {
+    transform: rotateY(15deg) rotateX(10deg);
+}
+
+.course-inner button {
+    margin-top: 15px;
+    padding: 8px 15px;
+    border: none;
+    background: gold;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#timer {
+    font-size: 24px;
+    font-weight: bold;
+    color: yellow;
+    margin: 20px;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% {opacity: 1;}
+    50% {opacity: 0.5;}
+    100% {opacity: 1;}
+}
+
+.question-box {
+    background: rgba(255,255,255,0.15);
+    padding: 20px;
+    margin: 20px auto;
+    width: 70%;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.exam-form {
+    width: 70%;
+    margin: auto;
+    text-align: left;
+}
+
+.question-box-left {
+    background: rgba(255,255,255,0.15);
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.question-box-left label {
+    display: block;
+    margin: 8px 0;
+    cursor: pointer;
+}
+
+.result-box {
+    width: 400px;
+    margin: auto;
+    background: rgba(255,255,255,0.15);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.exam-container {
+    display: flex;
+}
+
+.question-nav {
+    width: 80px;
+    position: sticky;
+    top: 100px;
+}
+
+.question-nav button {
+    display: block;
+    margin: 5px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.exam-form {
+    flex: 1;
+    margin-left: 20px;
+    text-align: left;
+}
+
+.result-container {
+    width: 70%;
+    margin: auto;
+    margin-top: 40px;
+    text-align: center;
+}
+
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+}
+
+.result-table th,
+.result-table td {
+    padding: 12px;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.result-table th {
+    background: rgba(0,0,0,0.3);
+}
+
+.pass {
+    color: limegreen;
+    font-weight: bold;
+}
+
+.fail {
+    color: red;
+    font-weight: bold;
+}
+
+.no-result {
+    font-size: 18px;
+    margin-top: 20px;
+}
