@@ -1,0 +1,10 @@
+<h2>Settings</h2>
+
+{% if student[6] %}
+<img src="{{ url_for('static', filename='profile_pics/' + student[6]) }}" width="150">
+{% endif %}
+
+<form method="POST" enctype="multipart/form-data">
+    <input type="file" name="profile_pic">
+    <button type="submit">Upload</button>
+</form>
