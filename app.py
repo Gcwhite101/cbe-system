@@ -1,28 +1,26 @@
-from flask import Flask, render_template, request, redirect, session, url_for
-import sqlite3
 import os
+import sqlite3
+from flask import Flask, render_template, request, redirect, session, url_for, flash
+from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
 UPLOAD_FOLDER = "static/uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
 
 # ================= DATABASE =================
-
 def init_db():
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
 
-    # Students table
     c.execute("""
     CREATE TABLE IF NOT EXISTS students (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        matric TEXT UNIQUE,
+        reg_no TEXT UNIQUE,
         fullname TEXT,
         department TEXT,
         password TEXT,
@@ -30,209 +28,134 @@ def init_db():
     )
     """)
 
-    # Questions table
-    c.execute("""
-    CREATE TABLE IF NOT EXISTS questions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        course TEXT,
-        question TEXT,
-        optionA TEXT,
-        optionB TEXT,
-        optionC TEXT,
-        optionD TEXT,
-        answer TEXT
-    )
-    """)
-
-    # Results table
-    c.execute("""
-    CREATE TABLE IF NOT EXISTS results (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        student_matric TEXT,
-        course TEXT,
-        score INTEGER
-    )
-    """)
-
     conn.commit()
     conn.close()
+
 
 init_db()
 
-# ================= HOME =================
 
+# ================= HOME =================
 @app.route("/")
 def home():
-    return render_template("login.html")
+    return redirect("/login")
+
 
 # ================= REGISTER =================
-
-@app.route("/register", methods=["POST"])
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    matric = request.form.get("matric")
-    fullname = request.form.get("fullname")
-    department = request.form.get("department")
-    password = request.form.get("password")
-
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-
-    try:
-        c.execute("""
-        INSERT INTO students (matric, fullname, department, password, profile_pic)
-        VALUES (?, ?, ?, ?, ?)
-        """, (matric, fullname, department, password, "default.png"))
-        conn.commit()
-    except:
-        conn.close()
-        return "Matric number already exists!"
-
-    conn.close()
-    return redirect(url_for("home"))
-
-# ================= LOGIN =================
-
-@app.route("/login", methods=["POST"])
-def login():
-    matric = request.form.get("matric")
-    password = request.form.get("password")
-
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-
-    c.execute("SELECT * FROM students WHERE matric=? AND password=?", (matric, password))
-    student = c.fetchone()
-    conn.close()
-
-    if student:
-        session["student_id"] = student[0]
-        session["matric"] = student[1]
-        session["fullname"] = student[2]
-        session["department"] = student[3]
-        session["profile_pic"] = student[5]
-        return redirect(url_for("dashboard"))
-    else:
-        return "Invalid login details!"
-
-# ================= DASHBOARD =================
-
-@app.route("/dashboard")
-def dashboard():
-    if "student_id" not in session:
-        return redirect(url_for("home"))
-
-    return render_template("dashboard.html",
-                           name=session["fullname"],
-                           matric=session["matric"],
-                           department=session["department"],
-                           profile=session["profile_pic"])
-
-# ================= PROFILE UPDATE =================
-
-@app.route("/upload", methods=["POST"])
-def upload():
-    if "student_id" not in session:
-        return redirect(url_for("home"))
-
-    file = request.files["profile_pic"]
-    if file:
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-        file.save(filepath)
+    if request.method == "POST":
+        reg_no = request.form["reg_no"]
+        fullname = request.form["fullname"]
+        department = request.form["department"]
+        password = generate_password_hash(request.form["password"])
 
         conn = sqlite3.connect("database.db")
         c = conn.cursor()
-        c.execute("UPDATE students SET profile_pic=? WHERE id=?",
-                  (filename, session["student_id"]))
-        conn.commit()
+
+        try:
+            c.execute("""
+            INSERT INTO students (reg_no, fullname, department, password)
+            VALUES (?, ?, ?, ?)
+            """, (reg_no, fullname, department, password))
+            conn.commit()
+            flash("Registration successful. Please login.")
+            return redirect("/login")
+        except:
+            flash("Registration number already exists.")
+        finally:
+            conn.close()
+
+    return render_template("register.html")
+
+
+# ================= LOGIN =================
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        reg_no = request.form["reg_no"]
+        password = request.form["password"]
+
+        conn = sqlite3.connect("database.db")
+        c = conn.cursor()
+        c.execute("SELECT * FROM students WHERE reg_no = ?", (reg_no,))
+        user = c.fetchone()
         conn.close()
 
-        session["profile_pic"] = filename
+        if user and check_password_hash(user[4], password):
+            session["user_id"] = user[0]
+            return redirect("/dashboard")
+        else:
+            flash("Invalid login details.")
 
-    return redirect(url_for("dashboard"))
+    return render_template("login.html")
 
-# ================= COURSES =================
 
-@app.route("/courses")
-def courses():
-    if "student_id" not in session:
-        return redirect(url_for("home"))
-
-    course_list = ["PHY101", "CHM101", "GST101"]
-    return render_template("course.html", courses=course_list)
-
-# ================= EXAM =================
-
-@app.route("/exam/<course>")
-def exam(course):
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-    c.execute("SELECT * FROM questions WHERE course=?", (course,))
-    questions = c.fetchall()
-    conn.close()
-
-    return render_template("exam.html", questions=questions, course=course)
-
-# ================= SUBMIT EXAM =================
-
-@app.route("/submit_exam/<course>", methods=["POST"])
-def submit_exam(course):
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-    c.execute("SELECT * FROM questions WHERE course=?", (course,))
-    questions = c.fetchall()
-
-    score = 0
-    for q in questions:
-        qid = str(q[0])
-        correct = q[7]
-        if request.form.get(qid) == correct:
-            score += 1
-
-    c.execute("INSERT INTO results (student_matric, course, score) VALUES (?, ?, ?)",
-              (session["matric"], course, score))
-
-    conn.commit()
-    conn.close()
-
-    return render_template("result.html", score=score, total=len(questions))
-
-# ================= VIEW RESULTS =================
-
-@app.route("/results")
-def results():
-    if "student_id" not in session:
-        return redirect(url_for("home"))
+# ================= DASHBOARD =================
+@app.route("/dashboard")
+def dashboard():
+    if "user_id" not in session:
+        return redirect("/login")
 
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
-    c.execute("SELECT course, score FROM results WHERE student_matric=?",
-              (session["matric"],))
-    student_results = c.fetchall()
+    c.execute("SELECT * FROM students WHERE id = ?", (session["user_id"],))
+    user = c.fetchone()
     conn.close()
 
-    return render_template("results.html", results=student_results)
+    return render_template("dashboard.html", user=user)
 
-# ================= ADMIN PANEL =================
 
-@app.route("/admin")
-def admin():
+# ================= SETTINGS =================
+@app.route("/settings", methods=["GET", "POST"])
+def settings():
+    if "user_id" not in session:
+        return redirect("/login")
+
     conn = sqlite3.connect("database.db")
     c = conn.cursor()
-    c.execute("SELECT matric, fullname, department FROM students")
-    students = c.fetchall()
+
+    if request.method == "POST":
+        fullname = request.form["fullname"]
+        department = request.form["department"]
+
+        profile_pic = request.files.get("profile_pic")
+
+        if profile_pic and profile_pic.filename != "":
+            filename = secure_filename(profile_pic.filename)
+            filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            profile_pic.save(filepath)
+
+            c.execute("""
+            UPDATE students
+            SET fullname=?, department=?, profile_pic=?
+            WHERE id=?
+            """, (fullname, department, filename, session["user_id"]))
+        else:
+            c.execute("""
+            UPDATE students
+            SET fullname=?, department=?
+            WHERE id=?
+            """, (fullname, department, session["user_id"]))
+
+        conn.commit()
+        flash("Profile updated successfully.")
+
+    c.execute("SELECT * FROM students WHERE id = ?", (session["user_id"],))
+    user = c.fetchone()
     conn.close()
 
-    return render_template("admin.html", students=students)
+    return render_template("settings.html", user=user)
+
 
 # ================= LOGOUT =================
-
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for("home"))
+    return redirect("/login")
 
-# ================= RUN =================
 
+# ================= RENDER PORT FIX =================
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
