@@ -1,8 +1,31 @@
-<form method="POST">
-    <input name="fullname" placeholder="Full Name" required>
-    <input name="matric" placeholder="Matric Number" required>
-    <input name="department" placeholder="Department" required>
-    <input name="faculty" placeholder="Faculty" required>
-    <input name="password" type="password" placeholder="Password" required>
-    <button type="submit">Register</button>
-</form>
+{% extends "base.html" %}
+{% block content %}
+
+<section class="form-hero">
+
+    <div class="glass-card">
+
+        <a href="/" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+
+        <h2>Student Registration</h2>
+
+        <p class="mini-quote">
+            "Your academic journey starts with a single step."
+        </p>
+
+        <form method="POST">
+            <input type="text" name="matric" placeholder="Matric Number" required>
+            <input type="text" name="full_name" placeholder="Full Name" required>
+            <input type="text" name="department" placeholder="Department" required>
+            <input type="text" name="faculty" placeholder="Faculty" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button class="primary-btn">Register</button>
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

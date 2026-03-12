@@ -1,45 +1,127 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block body_class %}dashboard-page{% endblock %}
+
+{% block content %}
 
 <!-- HERO SECTION -->
-<div class="dashboard-hero">
-    <h1>Welcome, {{ student.name }}</h1>
-    <p>University Computer Based Examination Portal</p>
-    <a href="/logout" class="logout-btn">Logout</a>
-</div>
+<div class="dashboard-header">
 
-<!-- STUDENT PROFILE CARD -->
-<div class="profile-card">
-    <h2>Student Profile</h2>
-    <ul>
-        <li><strong>Matric Number:</strong> {{ student.matric }}</li>
-        <li><strong>Department:</strong> {{ student.department }}</li>
-        <li><strong>Faculty:</strong> {{ student.faculty }}</li>
-        <li><strong>Level:</strong> {{ student.level }}</li>
-        <li><strong>Programme:</strong> {{ student.discipline }}</li>
-    </ul>
-</div>
+    <h1 class="welcome-text">
+        Welcome, {{ user["full_name"].split(" ")[0] }} 👋
+    </h1>
 
-<!-- MENU CARDS -->
-<div class="card-container">
-    <a href="/courses" class="card">📘 Courses</a>
-    <a href="/result" class="card">📊 CBE Results</a>
-    <a href="/grades" class="card">🎓 Grades</a>
-</div>
-
-<!-- MOTIVATIONAL QUOTE -->
-<div class="quote">
-    <p>
-        "Success is not defined by luck but by preparation, discipline, and the courage to
-        attempt greatness. Every examination you take is a step toward your destiny.
-        Stay focused. Stay determined. Excellence is yours."
+    <p class="hero-quote">
+        "Discipline today creates success tomorrow.
+        You are building your future right now."
     </p>
+
+    <div class="student-card">
+
+        <p><strong>Matric:</strong> {{ user["matric"] }}</p>
+
+        <p><strong>Department:</strong> {{ user["department"] }}</p>
+
+        <p><strong>Faculty:</strong> {{ user["faculty"] }}</p>
+
+    </div>
+
 </div>
 
-</body>
-</html>
+
+<!-- QUICK ACTIONS -->
+<div class="action-grid">
+
+<a href="/start-test" class="action-card">
+🚀 Start New Test
+</a>
+
+<a href="/study-materials" class="action-card">
+📚 Study Materials
+</a>
+
+<a href="/results" class="action-card">
+📊 View Results
+</a>
+
+</div>
+
+
+<!-- FEATURES -->
+<div class="feature-section">
+
+<a href="/courses" class="feature-card">
+📚 Courses
+</a>
+
+<a href="/start-test" class="feature-card">
+📝 Test
+</a>
+
+<a href="/results" class="feature-card">
+📊 Results
+</a>
+
+<a href="/study-materials" class="feature-card">
+📖 Study
+</a>
+
+</div>
+
+
+<script>
+
+/* CLOCK */
+
+function updateTime() {
+
+    const now = new Date();
+
+    document.getElementById("liveTime").innerHTML =
+        now.toLocaleTimeString();
+
+}
+
+setInterval(updateTime,1000);
+updateTime();
+
+
+/* COUNTER ANIMATION */
+
+const counters = document.querySelectorAll(".counter");
+
+counters.forEach(counter => {
+
+counter.innerText = "0";
+
+const updateCounter = () => {
+
+const target = +counter.getAttribute("data-target");
+
+const c = +counter.innerText;
+
+const increment = target / 100;
+
+if(c < target){
+
+counter.innerText = Math.ceil(c + increment);
+
+setTimeout(updateCounter,20);
+
+}
+
+else{
+
+counter.innerText = target;
+
+}
+
+};
+
+updateCounter();
+
+});
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CBE Simulator</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+
+<header class="main-header">
+
+<div class="logo">
+<i class="fa-solid fa-graduation-cap"></i> CBE Simulator
+</div>
+
+<nav class="nav-links">
+
+{% if "user_id" in session %}
+
+<span id="liveTime"></span>
+
+<a href="/settings" class="settings-btn">
+<i class="fa-solid fa-gear"></i> Settings
+</a>
+
+<a href="/logout" class="logout-btn">
+Logout
+</a>
+
+{% else %}
+
+<a href="/">Home</a>
+<a href="/login">Login</a>
+<a href="/register">Register</a>
+
+{% endif %}
+
+</nav>
+
+</header>
+
+{% block content %}{% endblock %}
+
+<footer class="footer">
+
+    <div class="contact-buttons">
+        <a href="#"><i class="fa-solid fa-envelope"></i> Email</a>
+        <a href="#"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+        <a href="#"><i class="fa-brands fa-instagram"></i> Instagram</a>
+        <a href="#"><i class="fa-brands fa-x-twitter"></i> Twitter</a>
+    </div>
+
+    <p>© 2026 CBE Simulator | Developed for Academic Excellence</p>
+    <p>Production Year: 2026</p>
+
+</footer>
+
+<script>
+function updateTime(){
+const now = new Date();
+const clock = document.getElementById("liveTime");
+if(clock){
+clock.innerHTML = now.toLocaleTimeString();
+}
+}
+
+setInterval(updateTime,1000);
+updateTime();
+</script>
+
+</body>
+</html>

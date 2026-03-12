@@ -1,55 +1,28 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>CBE Simulator - University Portal</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
 
-<div class="landing-hero">
-    <h1>UNIVERSITY COMPUTER BASED EXAMINATION PORTAL</h1>
-    <p class="tagline">Empowering Academic Excellence Through Digital Assessment</p>
-</div>
+<section class="form-hero">
 
-<div class="description">
-    <h2>About This Portal</h2>
-    <p>
-        Welcome to the official Computer Based Examination (CBE) platform designed to
-        transform the academic assessment experience within our institution. This system
-        provides students with a secure, reliable, and innovative digital environment
-        where examinations are conducted seamlessly with transparency and efficiency.
-    </p>
+    <div class="glass-card">
 
-    <p>
-        Our mission is to eliminate traditional examination stress while maintaining the
-        highest standards of academic integrity. Through this platform, students can
-        access registered courses, participate in timed assessments, view instant results,
-        and monitor academic progress in real time.
-    </p>
+        <a href="/" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
 
-    <p>
-        Built with advanced technology and user-focused design, the CBE Portal ensures
-        fast performance, secure authentication, accurate grading systems, and complete
-        confidentiality of academic records.
-    </p>
+        <h2>Student Login</h2>
 
-    <p>
-        This is more than just an examination system — it is a digital transformation
-        initiative that prepares students for a technologically advanced future.
-        Welcome to the future of academic assessment.
-    </p>
-</div>
+        <p class="mini-quote">
+            "Success is where preparation meets opportunity."
+        </p>
 
-<div class="login-card">
-    <h2>Student Login</h2>
-    <form action="/login" method="POST">
-        <input type="text" name="matric" placeholder="Matric Number" required>
-        <input type="text" name="fullname" placeholder="Full Name" required>
-        <input type="text" name="department" placeholder="Department" required>
-        <input type="text" name="faculty" placeholder="Faculty" required>
-        <button type="submit">Access Portal</button>
-    </form>
-</div>
+        <form method="POST">
+            <input type="text" name="matric" placeholder="Matric Number" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button class="primary-btn">Login</button>
+        </form>
 
-</body>
-</html>
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,161 +1,196 @@
-import os
+from flask import Flask, render_template, request, redirect, session
 import sqlite3
-from flask import Flask, render_template, request, redirect, session, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
-UPLOAD_FOLDER = "static/uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-
-# ================= DATABASE =================
+# ---------------------------
+# CREATE DATABASE
+# ---------------------------
 def init_db():
     conn = sqlite3.connect("database.db")
-    c = conn.cursor()
+    cursor = conn.cursor()
 
-    c.execute("""
-    CREATE TABLE IF NOT EXISTS students (
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        reg_no TEXT UNIQUE,
-        fullname TEXT,
+        matric TEXT UNIQUE,
+        full_name TEXT,
         department TEXT,
-        password TEXT,
-        profile_pic TEXT
+        faculty TEXT,
+        password TEXT
     )
     """)
 
     conn.commit()
     conn.close()
 
-
 init_db()
 
 
-# ================= HOME =================
+# ---------------------------
+# HOME
+# ---------------------------
 @app.route("/")
 def home():
-    return redirect("/login")
+    return render_template("index.html")
 
 
-# ================= REGISTER =================
+# ---------------------------
+# REGISTER
+# ---------------------------
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        reg_no = request.form["reg_no"]
-        fullname = request.form["fullname"]
+
+        matric = request.form["matric"]
+        full_name = request.form["full_name"]
         department = request.form["department"]
+        faculty = request.form["faculty"]
         password = generate_password_hash(request.form["password"])
 
         conn = sqlite3.connect("database.db")
-        c = conn.cursor()
+        cursor = conn.cursor()
 
         try:
-            c.execute("""
-            INSERT INTO students (reg_no, fullname, department, password)
-            VALUES (?, ?, ?, ?)
-            """, (reg_no, fullname, department, password))
+            cursor.execute("""
+            INSERT INTO users (matric, full_name, department, faculty, password)
+            VALUES (?, ?, ?, ?, ?)
+            """, (matric, full_name, department, faculty, password))
+
             conn.commit()
-            flash("Registration successful. Please login.")
-            return redirect("/login")
-        except:
-            flash("Registration number already exists.")
-        finally:
             conn.close()
+
+            return redirect("/login")
+
+        except:
+            conn.close()
+            return "Matric number already exists"
 
     return render_template("register.html")
 
 
-# ================= LOGIN =================
+# ---------------------------
+# LOGIN
+# ---------------------------
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        reg_no = request.form["reg_no"]
+
+        matric = request.form["matric"]
         password = request.form["password"]
 
         conn = sqlite3.connect("database.db")
-        c = conn.cursor()
-        c.execute("SELECT * FROM students WHERE reg_no = ?", (reg_no,))
-        user = c.fetchone()
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM users WHERE matric = ?", (matric,))
+        user = cursor.fetchone()
         conn.close()
 
-        if user and check_password_hash(user[4], password):
-            session["user_id"] = user[0]
+        if user and check_password_hash(user["password"], password):
+            session["user_id"] = user["id"]
             return redirect("/dashboard")
         else:
-            flash("Invalid login details.")
+            return "Invalid login details"
 
     return render_template("login.html")
 
 
-# ================= DASHBOARD =================
+# ---------------------------
+# DASHBOARD
+# ---------------------------
 @app.route("/dashboard")
 def dashboard():
+
     if "user_id" not in session:
         return redirect("/login")
 
     conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-    c.execute("SELECT * FROM students WHERE id = ?", (session["user_id"],))
-    user = c.fetchone()
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM users WHERE id = ?", (session["user_id"],))
+    user = cursor.fetchone()
     conn.close()
+
+    if user is None:
+        session.clear()
+        return redirect("/login")
 
     return render_template("dashboard.html", user=user)
 
 
-# ================= SETTINGS =================
-@app.route("/settings", methods=["GET", "POST"])
-def settings():
+# ---------------------------
+# COURSES
+# ---------------------------
+@app.route("/courses")
+def courses():
+
     if "user_id" not in session:
         return redirect("/login")
 
-    conn = sqlite3.connect("database.db")
-    c = conn.cursor()
-
-    if request.method == "POST":
-        fullname = request.form["fullname"]
-        department = request.form["department"]
-
-        profile_pic = request.files.get("profile_pic")
-
-        if profile_pic and profile_pic.filename != "":
-            filename = secure_filename(profile_pic.filename)
-            filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-            profile_pic.save(filepath)
-
-            c.execute("""
-            UPDATE students
-            SET fullname=?, department=?, profile_pic=?
-            WHERE id=?
-            """, (fullname, department, filename, session["user_id"]))
-        else:
-            c.execute("""
-            UPDATE students
-            SET fullname=?, department=?
-            WHERE id=?
-            """, (fullname, department, session["user_id"]))
-
-        conn.commit()
-        flash("Profile updated successfully.")
-
-    c.execute("SELECT * FROM students WHERE id = ?", (session["user_id"],))
-    user = c.fetchone()
-    conn.close()
-
-    return render_template("settings.html", user=user)
+    return render_template("courses.html")
 
 
-# ================= LOGOUT =================
+# ---------------------------
+# START TEST
+# ---------------------------
+@app.route("/start-test")
+def start_test():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    return render_template("start_test.html")
+
+
+# ---------------------------
+# RESULTS
+# ---------------------------
+@app.route("/results")
+def results():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    return render_template("results.html")
+
+
+# ---------------------------
+# STUDY MATERIALS
+# ---------------------------
+@app.route("/study-materials")
+def study_materials():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    return render_template("study_materials.html")
+
+
+# ---------------------------
+# SETTINGS
+# ---------------------------
+@app.route("/settings")
+def settings():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    return render_template("settings.html")
+
+
+# ---------------------------
+# LOGOUT
+# ---------------------------
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect("/login")
 
 
-# ================= RENDER PORT FIX =================
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)
