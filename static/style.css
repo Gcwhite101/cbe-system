@@ -399,3 +399,96 @@ transition:0.3s;
 .page-back:hover{
 background:#3b82f6;
 }
+
+/* ============================= */
+/* MOBILE RESPONSIVE */
+/* ============================= */
+
+@media (max-width: 768px){
+
+/* HEADER */
+.main-header{
+padding:10px 15px;
+}
+
+.logo{
+font-size:18px;
+}
+
+/* NAV */
+.nav-links{
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+#liveTime{
+font-size:12px;
+}
+
+/* HERO SECTION */
+.dashboard-header{
+padding:40px 15px;
+margin:20px;
+}
+
+.welcome-text{
+font-size:28px;
+}
+
+.hero-quote{
+font-size:14px;
+}
+
+/* STUDENT CARD */
+.student-card{
+width:90%;
+padding:20px;
+}
+
+/* ACTION BUTTONS */
+.action-grid{
+flex-direction:column;
+gap:15px;
+align-items:center;
+}
+
+.action-card{
+width:80%;
+text-align:center;
+font-size:16px;
+}
+
+/* FEATURE CARDS */
+.feature-section{
+flex-wrap:wrap;
+gap:15px;
+padding:30px 10px;
+}
+
+.feature-card{
+width:40%;
+text-align:center;
+padding:15px;
+font-size:14px;
+}
+
+/* FOOTER */
+.footer{
+padding:20px;
+font-size:12px;
+}
+
+.contact-buttons{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:10px;
+}
+
+.contact-buttons a{
+padding:6px 12px;
+font-size:12px;
+}
+
+}
